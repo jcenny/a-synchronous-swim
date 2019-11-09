@@ -1,9 +1,30 @@
-(function() {
+(function () {
 
   const serverUrl = 'http://127.0.0.1:3000';
 
   //
   // TODO: build the swim command fetcher here
+  var getMessageFromServer = function () {
+    $.ajax({
+      type: 'GET',
+      data: {},
+      url: serverUrl,
+      contentType: 'application/json',
+      success: (data) => {
+        console.log('success')
+        console.log(data)
+        var parseData = JSON.parse(data);
+        parseData.forEach((element) => {
+          SwimTeam.move(element)})
+        getMessageFromServer();
+      },
+      error: function(data) {
+        console.log('failed')
+      }
+    });
+  }
+  getMessageFromServer();
+  //setInterval(getMessageFromServer, 2000);
   //
 
   /////////////////////////////////////////////////////////////////////
@@ -11,13 +32,14 @@
   // Note: remember to fix the URL below.
   /////////////////////////////////////////////////////////////////////
 
+
   const ajaxFileUplaod = (file) => {
     var formData = new FormData();
     formData.append('file', file);
     $.ajax({
       type: 'POST',
       data: formData,
-      url: 'FILL_ME_IN',
+      url: serverUrl,
       cache: false,
       contentType: false,
       processData: false,
@@ -28,7 +50,7 @@
     });
   };
 
-  $('form').on('submit', function(e) {
+  $('form').on('submit', function (e) {
     e.preventDefault();
 
     var form = $('form .file')[0];
